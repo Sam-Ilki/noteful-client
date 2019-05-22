@@ -7,7 +7,6 @@ import NoteListMain from '../NoteListMain/NoteListMain'
 import NotePageMain from '../NotePageMain/NotePageMain'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
-import dummyStore from '../dummy-store'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
 import './App.css'
 
@@ -18,8 +17,27 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // fake date loading from API call
-    setTimeout(() => this.setState(dummyStore), 600)
+    const url = `http://localhost:8000/api/`
+    const endpoints = ['notes', 'folders']
+
+    Promise.all(endpoints.map( e => 
+      fetch(url.concat(e))
+        .then(res => {
+        if (!res.ok) {
+          throw new Error('Unable to fetch from server');
+        }
+        return res.json()
+        })
+        .then(resJson => this.setState({
+          [e]: resJson
+        })) 
+      
+    ))
+    .catch(error => {
+      this.setState({
+        error: 'Unable to fetch data from server'
+      })
+    })
   }
 
   renderNavRoutes() {
