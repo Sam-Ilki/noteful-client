@@ -9,6 +9,7 @@ import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
 import './App.css'
+import config from '../config'
 
 class App extends Component {
   state = {
@@ -17,7 +18,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const url = `http://localhost:8000/api/`
+    const url = config.API_ENDPOINT
     const endpoints = ['notes', 'folders']
 
     Promise.all(endpoints.map( e => 
