@@ -17,9 +17,9 @@ export default class AddNote extends Component {
     })
   }
 
-  handleUpdateContent = content => {
+  handleUpdateContent = (value) => {
     this.setState({
-      'content': content
+      'content': value
     })
   }
 
@@ -85,7 +85,7 @@ export default class AddNote extends Component {
             </select>
           </div>
           <div className='buttons'>
-            <button onClick={() => this.handleClick()}>>
+            <button onClick={() => this.handleClick()}>
               Add note
             </button>
           </div>
