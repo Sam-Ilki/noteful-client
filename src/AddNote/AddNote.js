@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
 import './AddNote.css'
+import { getAllNotesAndFolders } from '../API'
 import config from '../config'
 
 export default class AddNote extends Component {
@@ -45,9 +46,16 @@ export default class AddNote extends Component {
         folder_id: folder_id
       })
     })
+    .then(getAllNotesAndFolders)
+    .then(this.props.setNotesAndFolders)
     .then(
       this.props.history.push('/')
     )
+    .catch(error => {
+      this.setState({
+        error: 'Unable to fetch data from server'
+      })
+    })
   }
 
   static defaultProps = {

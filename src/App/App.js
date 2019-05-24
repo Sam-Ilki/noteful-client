@@ -7,9 +7,9 @@ import NoteListMain from '../NoteListMain/NoteListMain'
 import NotePageMain from '../NotePageMain/NotePageMain'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
+import { getAllNotesAndFolders } from '../API'
 import { getNotesForFolder, findNote, findFolder } from '../notes-helpers'
 import './App.css'
-import config from '../config'
 
 class App extends Component {
   state = {
@@ -18,27 +18,17 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const url = config.API_ENDPOINT
-    const endpoints = ['notes', 'folders']
-
-    Promise.all(endpoints.map( e => 
-      fetch(url.concat(e))
-        .then(res => {
-        if (!res.ok) {
-          throw new Error('Unable to fetch from server');
-        }
-        return res.json()
-        })
-        .then(resJson => this.setState({
-          [e]: resJson
-        })) 
-      
-    ))
+    getAllNotesAndFolders()
+    .then(this.setNotesAndFolders)
     .catch(error => {
       this.setState({
         error: 'Unable to fetch data from server'
       })
     })
+  }
+  setNotesAndFolders = (data) => {
+    const [ notes, folders] = data
+    this.setState({notes, folders})
   }
 
   renderNavRoutes() {
@@ -121,7 +111,16 @@ class App extends Component {
         />
         <Route
           path='/add-folder'
-          component={AddFolder}
+          render={routeProps => {
+            return (
+              <AddFolder
+                {...routeProps}
+                folders={folders}
+                setNotesAndFolders={this.setNotesAndFolders}
+              />
+            )
+          }}
+
         />
         <Route
           path='/add-note'
@@ -130,6 +129,7 @@ class App extends Component {
               <AddNote
                 {...routeProps}
                 folders={folders}
+                setNotesAndFolders={this.setNotesAndFolders}
               />
             )
           }}

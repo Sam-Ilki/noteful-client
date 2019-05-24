@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
 import './AddFolder.css'
+import { getAllNotesAndFolders } from '../API'
 import config from '../config'
 
 export default class AddFolder extends Component {
@@ -28,6 +29,8 @@ export default class AddFolder extends Component {
         name: name
       })
     })
+    .then(getAllNotesAndFolders)
+    .then(this.props.setNotesAndFolders)
     .then(
       this.props.history.push('/')
     )
